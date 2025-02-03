@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MatchPlay Tournament Viewer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body data-tournament-id="">
+
+    <header class="collapsible-header">
+        <div class="header-content">
+            <h1 id="tournament-name">MatchPlay Tournament Viewer</h1>
+            <h2 class="current-round"></h2>
+        </div>
+
+        <button class="collapse-toggle" id="collapse-btn">
+            <i class="fa-solid fa-chevron-up"></i>
+        </button>
+
+        <div class="search-container ">
+            <label for="tournament-id" class="input-label">Enter Tournament ID</label>
+            <div class="input-group">
+                <input type="text" id="tournament-id" placeholder="Tournament ID">
+                <button id="load-tournament" class="view-button">View</button>
+            </div>
+        </div>
+
+
+    </header>
+    <header id="open-caret" class="open-caret hidden">
+        <div class="current-round-container">
+            <h2 class="current-round"></h2>
+        </div>
+        <div class="btn-container">
+            <button class="open-toggle" id="open-btn">
+                <i class="fa-solid fa-angle-down"></i> <!-- Changed to chevron for consistency -->
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Active Round -->
+        <section id="active-round" >
+            <ul id="match-list">
+                <!-- Matches will be inserted dynamically -->
+            </ul>
+        </section>
+
+        <!-- Standings -->
+        <section id="standings" >
+            <h2>Current Standings</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Player</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody id="standings-body">
+                    <!-- Standings will be inserted dynamically -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <button id="refresh-btn" class="floating-refresh">
+        <i class="fa-solid fa-arrows-rotate"></i>
+    </button>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fa-solid fa-spinner fa-spin"></i> <!-- Spinning loader icon -->
+            <p>Loading Tournament Data...</p>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

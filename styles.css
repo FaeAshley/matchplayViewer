@@ -1,0 +1,354 @@
+html {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+header {
+    color: #131925;
+    text-align: center;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-around;
+    max-height: 12%;
+    border-bottom: solid #435880;
+    margin: 0 5%;
+}
+
+main {
+    margin: 10px;
+    display: flex;
+    height: 100vh;               /* Full viewport height */
+    padding: 0;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+h1 {
+    font-size: 1.75em;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+table {
+    min-width: 450px;
+    background-color: white;
+    border-collapse: collapse;
+    border: none;
+    width: 100%;
+    margin: 20px 0;
+}
+
+th {
+    background-color: #bcc6db;
+}
+
+th, td, tr {
+    text-align: left;
+    padding: 8px;
+    border: none;
+}
+
+tr:nth-child(even) {
+    background-color: #bcc6db;
+
+}
+
+/* Header Layout */
+.collapsible-header {
+    display: flex;
+    justify-content: space-around;               /* Center content horizontally */
+    align-items: center;
+    padding: 1rem;
+    border-bottom: solid #435880;
+    margin: 0 auto;
+    max-width: 90%;                        /* Reduce header width */
+    position: relative;                    /* For absolute positioning of the caret */
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    overflow: hidden;
+    max-height: 200px;                     /* Expanded height */
+    gap: 20px;                             /* Spacing between header content and search */
+}
+
+/* Header Content */
+.header-content {
+    text-align: center;
+}
+
+/* Search Container */
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Collapse Button (Caret) */
+.collapse-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #333;
+    transition: transform 0.3s ease;
+    position: absolute;                   /* Floating effect */
+    bottom: -10px;                        /* Just below the header */
+    left: 50%;                            /* Center horizontally */
+    transform: translateX(-50%);          /* Perfect centering */
+    padding: 5px;
+    z-index: 1000;
+}
+
+/* Rotate Icon When Collapsed */
+.collapsible-header.collapsed .collapse-toggle i {
+    transform: rotate(180deg);            /* Rotates the caret down */
+}
+
+/* Hover Effect */
+.collapse-toggle:hover .open-toggle:hover {
+    color: #007bff;
+}
+
+.open-caret {
+    display: flex;
+    border: none;
+    margin: 0;
+}
+
+.open-caret h2 {
+    margin: 0;
+}
+
+.current-round-container {
+    width: 50%;
+    text-align: left;
+}
+
+.btn-container {
+    width: 50%;
+    text-align: left;
+}
+
+.open-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #333;
+    transition: transform 0.3s ease;
+}
+
+/* Label Styling */
+.input-label {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* Input and Button Wrapper */
+.input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 30px;            /* Rounded edges */
+    overflow: hidden;               /* Clip the corners of input & button */
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Subtle shadow */
+    transition: box-shadow 0.3s;
+}
+
+/* Focus Effect */
+.input-group:focus-within {
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);  /* Glow on focus */
+    border-color: #007bff;
+}
+
+/* Input Styling */
+.input-group input {
+    border: none;
+    padding: 12px 15px;
+    outline: none;
+    font-size: 16px;
+    width: 200px;
+    transition: all 0.3s ease;
+}
+
+/* View Button Styling */
+.view-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border-left: 1px solid #ccc;    /* Divider between input and button */
+}
+
+/* Hover & Active Effects */
+.view-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);    /* Slight lift on hover */
+}
+
+.view-button:active {
+    transform: translateY(0);       /* Press effect */
+}
+
+#active-round {
+    width: 73%;
+}
+
+#match-list {
+    display: flex;
+    flex-wrap: wrap;              /* Allows cards to wrap to the next line */
+    gap: 20px;                    /* Adds spacing between cards */
+    justify-content: left;      /* Center the cards horizontally */
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.match-container {
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    border-radius: 20px;
+    width: 300px;
+    max-width: 100%;
+    box-sizing: border-box;
+
+    display: flex;              /* Enables Flexbox */
+    flex-direction: column;     /* Stack items vertically */
+    justify-content: space-between; /* Distribute space between content and footer */
+    min-height: 300px;          /* Optional: ensures consistent card height */
+}
+
+.match-container ul {
+    flex-grow: 1;              /* Take up remaining space */
+    margin: 10px 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #768cb6;
+    min-height: 50px;  /* Consistent header height */
+    padding: 5px 0;
+}
+
+.game-name {
+    margin: 0.5rem;
+}
+
+.completed-game {
+    background-color: green;
+    color: white;
+    width: 100%;
+    display: block;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 10px;
+    margin-top: auto;          /* Pushes this element to the bottom */
+}
+
+.player {
+    display: flex;             /* Aligns placement and name horizontally */
+    align-items: left;       /* Vertically centers content */
+    margin: 5px;
+}
+
+.player-placement {
+    width: 2rem;               /* Fixed width for consistency */
+    display: inline-block;     /* Ensures it occupies space even when empty */
+    text-align: center;        /* Center the placement number */
+    font-weight: bold;
+}
+
+#standings {
+    width: 18%;
+}
+
+/* Floating Refresh Button */
+.floating-refresh {
+    position: fixed;                /* Makes the button float */
+    top: 20px;                      /* Distance from the top */
+    right: 4%;                    /* Distance from the right */
+    background-color: #007bff;      /* Button color */
+    color: white;                   /* Icon color */
+    border: none;
+    border-radius: 50%;             /* Makes it a circle */
+    padding: 15px;                  /* Adjust size */
+    font-size: 20px;                /* Icon size */
+    cursor: pointer;                /* Pointer cursor */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.3s, background-color 0.3s;
+    z-index: 1000;                  /* Keeps it on top of other elements */
+}
+
+/* Hover Effect */
+.floating-refresh:hover {
+    transform: rotate(90deg);       /* Icon rotates on hover */
+    background-color: #0056b3;      /* Darker shade on hover */
+}
+
+/* Compact Loading Banner */
+#loading-overlay {
+    position: fixed;
+    top: 20px;                           /* Slightly below the top */
+    right: 20px;                         /* Positioned to the top-right corner */
+    background-color: #007bff;           /* Bright blue background */
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;                  /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;                          /* Hidden by default */
+    transform: translateY(-20px);        /* Slight upward offset */
+    pointer-events: none;                /* Doesn't block interactions */
+}
+
+/* Show Banner */
+#loading-overlay.active {
+    opacity: 1;                          /* Make visible */
+    transform: translateY(0);            /* Slide down into place */
+}
+
+/* Spinner Icon */
+.loading-banner i {
+    font-size: 20px;
+}
+
+/* Text */
+.loading-banner p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Hidden Class */
+.hidden {
+    display: none;
+}
