@@ -10,6 +10,15 @@ body {
     color: #333;
 }
 
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
 header {
     color: #131925;
     text-align: center;
@@ -19,13 +28,6 @@ header {
     max-height: 12%;
     border-bottom: solid #435880;
     margin: 0 5%;
-}
-
-main {
-    margin: 10px;
-    display: flex;
-    height: 100vh;               /* Full viewport height */
-    padding: 0;
 }
 
 h1, h2 {
@@ -84,11 +86,17 @@ tr:nth-child(even) {
 
 /* Header Content */
 .header-content {
+    width: 33%;
     text-align: center;
+}
+
+.view-btn-container {
+    width: 34%;
 }
 
 /* Search Container */
 .search-container {
+    width: 33%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -132,12 +140,17 @@ tr:nth-child(even) {
 }
 
 .current-round-container {
-    width: 50%;
+    width: 32%;
     text-align: left;
 }
 
+.caret-container {
+    width: 36%;
+    text-align: center;
+}
+
 .btn-container {
-    width: 50%;
+    width: 32%;
     text-align: left;
 }
 
@@ -188,12 +201,6 @@ tr:nth-child(even) {
 
 /* View Button Styling */
 .view-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    font-size: 16px;
-    cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     border-left: 1px solid #ccc;    /* Divider between input and button */
 }
@@ -210,6 +217,56 @@ tr:nth-child(even) {
 
 #active-round {
     width: 73%;
+}
+
+.main-container {
+    margin: 10px;
+    display: flex;
+    height: 100vh;               /* Full viewport height */
+    padding: 0;
+}
+
+/* Grid Layout for Player List */
+.players-grid {
+    width:  100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);  /* Creates 4 equal columns */
+    gap: 10px;                              /* Spacing between items */
+    padding: 10px;
+    list-style: none;                       /* Remove bullet points */
+    grid-auto-rows: min-content
+}
+
+/* Player Item Styling */
+.player-li {
+    background-color: #f5f5f5;              /* Light background */
+    padding: 8px;
+    border-radius: 5px;
+    text-align: center;                     /* Center the text */
+    font-weight: bold;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: background-color 0.3s;       /* Hover effect */
+    font-size: 25px;
+    line-height: 1.2;
+}
+
+/* Hover Effect */
+.player-li:hover {
+    background-color: #dbe8ff;              /* Light blue on hover */
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .players-grid {
+        grid-template-columns: repeat(2, 1fr);  /* 2 columns on small screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .players-grid {
+        grid-template-columns: 1fr;  /* Single column on very small screens */
+    }
 }
 
 #match-list {
