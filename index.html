@@ -15,6 +15,9 @@
             <h2 class="current-round"></h2>
         </div>
 
+        <div class="view-btn-container">
+            <button id="round-btn" class="switch-view-btn">View Active Round</button>
+        </div>
         <button class="collapse-toggle" id="collapse-btn">
             <i class="fa-solid fa-chevron-up"></i>
         </button>
@@ -33,14 +36,22 @@
         <div class="current-round-container">
             <h2 class="current-round"></h2>
         </div>
-        <div class="btn-container">
+        <div class="caret-container">
             <button class="open-toggle" id="open-btn">
                 <i class="fa-solid fa-angle-down"></i> <!-- Changed to chevron for consistency -->
             </button>
         </div>
+        <div class="btn-container">
+            <button id="players-btn" class="switch-view-btn">View All Players</button>
+        </div>
     </header>
+    <div id="players-container" class="main-container">
+        <ul id="players-list" class="players-grid">
 
-    <main>
+        </ul>
+    </div>
+
+    <div id="matches-and-standings-container" class="main-container hidden">
         <!-- Active Round -->
         <section id="active-round" >
             <ul id="match-list">
@@ -64,7 +75,7 @@
                 </tbody>
             </table>
         </section>
-    </main>
+    </div>
 
     <button id="refresh-btn" class="floating-refresh">
         <i class="fa-solid fa-arrows-rotate"></i>
