@@ -13,7 +13,7 @@ Loading Indicator: Visual feedback while data is being fetched.
 
 1️⃣ Clone the Repository
 
-git clone https://github.com/yourusername/matchplay-tournament-viewer.git
+git clone https://github.com/faeAshley/matchplayViewer.git
 cd matchplay-tournament-viewer
 
 2️⃣ Setup
