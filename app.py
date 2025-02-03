@@ -1,3 +1,5 @@
+import json
+
 import requests
 from flask import Flask, render_template, request, jsonify
 from selenium import webdriver
@@ -8,11 +10,39 @@ from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
+# In-memory cache for arena data
+tournament_cache = {
+    'tournament': {
+        'id': None,
+        'name': '',
+        'status': '',
+    },
+    'arenas': [],
+    'players': []
+}
+
 
 # Home route to render the main page
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@app.route('/get_data')
+def get_data():
+    tournament_id = 176659
+    url = f"http://127.0.0.1:5000/get_tournament_api"  # Calling your own Flask route
+    headers = {'Content-Type': 'application/json'}
+
+    try:
+        response = requests.post(url, json={'tournament_id': tournament_id}, headers=headers)
+        response.raise_for_status()  # Check for HTTP errors
+
+        data = response.json()  # Parse the JSON response
+        return f"<h1>Data Refreshed:</h1><pre>{json.dumps(data, indent=4)}</pre>"
+
+    except requests.exceptions.RequestException as e:
+        return f"<h1>Error:</h1><p>{e}</p>"
 
 
 # API route to fetch tournament data based on the ID
@@ -186,39 +216,144 @@ API_BASE_URL = "https://app.matchplay.events/api/tournaments"
 # Not currently in use
 @app.route('/get_tournament_api', methods=['POST'])
 def get_tournament_api():
-    tournament_id = request.json.get('tournament_id')
+    data = request.get_json()
+    tournament_id = data.get('tournament_id')
     if not tournament_id:
         return jsonify({'error': 'Tournament ID is required'}), 400
 
-    tournament_url = f"{API_BASE_URL}/{tournament_id}?includePlayers=1&includeArenas=true"
-    matches_url = f"{API_BASE_URL}/{tournament_id}/games?round=activeOrLatest"
     headers = {
         "Authorization": f"Bearer {API_TOKEN}",
         "Content-Type": "application/json",
         "Accept": "application/json"
     }
 
-    try:
-        # response = requests.get(matches_url, headers=headers)
-        # response.raise_for_status()  # Raises an HTTPError for bad responses
-        #
-        # data = response.json()  # Attempt to parse JSON
-        response = requests.get(tournament_url, headers=headers)
-        response.raise_for_status()
-        data = response.json()
+    # API Endpoints
+    tournament_url = f"{API_BASE_URL}/{tournament_id}?includePlayers=1&includeArenas=true"
+    matches_url = f"{API_BASE_URL}/{tournament_id}/games?round=activeOrLatest"
+    standings_url = f"{API_BASE_URL}/{tournament_id}/standings"
+    round_url = f"{API_BASE_URL}/{tournament_id}/rounds?cacheEligible = true"
 
-        print(data)
-        return jsonify(data)
+    # Cache Check
+    if tournament_cache['tournament']['id'] == tournament_id:
+        print("Using cached data.")
+        tournament = tournament_cache['tournament']
+        players = tournament_cache['players']
+        arenas = tournament_cache['arenas']
+    else:
+        try:
+            response = requests.get(tournament_url, headers=headers)
+            response.raise_for_status()
+            t_info = response.json().get('data', {})
+
+            # Tournament Info
+            tournament = {
+                'id': tournament_id,
+                'name': t_info.get('name', 'Unknown Name'),
+                'status': t_info.get('status', 'Unknown Status'),
+            }
+            tournament_cache['tournament'] = tournament
+
+            # Players
+            players = [
+                {
+                    "id": player.get('playerId', 'N/A'),
+                    "name": player.get('name', 'Unknown Player'),
+                    "standing": None,
+                    "points": None,
+                }
+                for player in t_info.get('players', [])
+            ]
+            tournament_cache['players'] = players
+
+            # Arenas
+            arenas = [
+                {
+                    "id": arena.get('arenaId', 'N/A'),
+                    "name": arena.get('name', 'Unknown Game Name'),
+                    "label": arena.get('tournamentArena', {}).get('labels', [])
+                }
+                for arena in t_info.get('arenas', [])
+            ]
+            tournament_cache['arenas'] = arenas
+
+        except (requests.exceptions.RequestException, ValueError) as e:
+            print(f"Error fetching tournament data: {e}")
+            return jsonify({'error': str(e)}), 500
+
+    # Matches
+    try:
+        m_response = requests.get(matches_url, headers=headers)
+        m_response.raise_for_status()
+        m_data = m_response.json().get("data", [])
+
+        matches = []
+        for match in m_data:
+            arena = next((a for a in arenas if a['id'] == match.get("arenaId")), None)
+            if arena:
+                placement_map = {pid: idx + 1 for idx, pid in enumerate(match.get('resultPositions', []))}
+                match_players = [
+                    {
+                        "id": pid,
+                        "name": next((p['name'] for p in players if p['id'] == pid), 'Unknown Player'),
+                        "player": idx + 1,
+                        "placement": placement_map.get(pid)
+                    }
+                    for idx, pid in enumerate(match.get('playerIds', []))
+                ]
+
+                matches.append({
+                    "id": arena["id"],
+                    "gameName": arena["name"],
+                    "label": arena.get("label", []),
+                    "duration": match.get("duration", 0),
+                    "matchPlayers": match_players,
+                    "status": match.get("status", "unknown")
+                })
 
     except requests.exceptions.RequestException as e:
-        # Log the error in the server console
-        print(f"Error fetching data from Matchplay API: {e}")
+        print(f"Error fetching match data: {e}")
         return jsonify({'error': str(e)}), 500
 
-    except ValueError as json_error:
-        # JSON decoding error
-        print(f"JSON Decode Error: {json_error}")
-        return jsonify({'error': 'Invalid JSON response from API'}), 500
+    # Standings
+    try:
+        s_response = requests.get(standings_url, headers=headers)
+        s_response.raise_for_status()
+        standings = s_response.json()
+
+        for standing in standings:
+            player = next((p for p in players if p['id'] == standing.get('playerId')), None)
+            if player:
+                player['standing'] = standing.get('position')
+                player['points'] = standing.get('points')
+
+        players.sort(key=lambda player: player.get('name', float('inf')))
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching standings: {e}")
+        return jsonify({'error': str(e)}), 500
+
+    try:
+        r_response = requests.get(round_url, headers=headers)
+        r_response.raise_for_status()
+        r_data = r_response.json().get("data", [])
+
+        current_round = {
+            'index': r_data[0]['index'] + 1,
+            'status': r_data[0]['status']
+        }
+
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching rounds data: {e}")
+        return jsonify({'error': str(e)}), 500
+
+    return jsonify({
+        'players': players,
+        'tournament': tournament,
+        'matches': matches,
+        'currentRound': current_round
+    })
+
 
 
 if __name__ == '__main__':

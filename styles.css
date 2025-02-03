@@ -22,7 +22,7 @@ button {
 header {
     color: #131925;
     text-align: center;
-    padding: 1rem;
+    padding: 1rem 0 0 0;
     display: flex;
     justify-content: space-around;
     max-height: 12%;
@@ -281,8 +281,8 @@ tr:nth-child(even) {
 .match-container {
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    border-radius: 20px;
+    padding: 0;
+    border-radius: 15px;
     width: 300px;
     max-width: 100%;
     box-sizing: border-box;
@@ -308,12 +308,17 @@ tr:nth-child(even) {
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #768cb6;
-    min-height: 50px;  /* Consistent header height */
-    padding: 5px 0;
+    height: 64px;
+    padding: 5px;
+}
+
+.game-header em {
+    margin-right: 10px;
 }
 
 .game-name {
     margin: 0.5rem;
+    font-size: 20.5px;
 }
 
 .completed-game {
@@ -322,14 +327,19 @@ tr:nth-child(even) {
     width: 100%;
     display: block;
     text-align: center;
-    padding: 5px 0;
-    border-radius: 10px;
+    padding: 10px 0;
     margin-top: auto;          /* Pushes this element to the bottom */
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.player-list {
+    margin-top: 5px;
+    font-size: 19px;
 }
 
 .player {
     display: flex;             /* Aligns placement and name horizontally */
-    align-items: left;       /* Vertically centers content */
     margin: 5px;
 }
 
